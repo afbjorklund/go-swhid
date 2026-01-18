@@ -8,8 +8,9 @@ import (
 )
 
 var directoryCmd = &cobra.Command{
-	Use:   "directory",
-	Short: "Compute a directory SWHID recursively",
+	Use:     "directory",
+	Aliases: []string{"dir"},
+	Short:   "Compute a directory SWHID recursively",
 	Run: func(cmd *cobra.Command, args []string) {
 		for _, arg := range args {
 			directory, err := swhid.NewDirectoryFromDir(arg)
