@@ -17,6 +17,7 @@ func run(cmd *cobra.Command, args []string) error {
 
 func main() {
 	rootCmd.AddCommand(contentCmd)
+	rootCmd.AddCommand(directoryCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {
