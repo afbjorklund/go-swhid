@@ -1,7 +1,6 @@
 package swhid
 
 import (
-	"fmt"
 	"io/fs"
 	"path/filepath"
 	"sort"
@@ -86,7 +85,6 @@ func (dir *Directory) Swhid() *Swhid {
 	bytes := []byte{}
 	for _, entry := range dir.Entries {
 		perms := permissions(entry.mode)
-		fmt.Printf("%s %o %s\n", entry.name, entry.mode, perms)
 		bytes = append(bytes, []byte(perms)...)
 		bytes = append(bytes, byte(' '))
 		bytes = append(bytes, []byte(entry.name)...)
