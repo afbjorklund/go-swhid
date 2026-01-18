@@ -6,11 +6,11 @@ type Content struct {
 }
 
 func NewContent(bytes []byte) *Content {
-	return &Content{Hash: NewHash(bytes)}
+	return &Content{Hash: NewHash(BLOB, bytes)}
 }
 
 func NewContentFromFile(path string) (*Content, error) {
-	hash, err := NewHashFromFile(path)
+	hash, err := NewHashFromFile(BLOB, path)
 	if err != nil {
 		return nil, err
 	}
