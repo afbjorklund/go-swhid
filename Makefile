@@ -16,3 +16,8 @@ lint:
 .PHONY: fix
 fix:
 	golangci-lint run --fix ./...
+
+.PHONY: cover
+cover:
+	$(GO) test -coverprofile=coverage.out ./...
+	$(GO) tool cover -html=coverage.out -o coverage.html

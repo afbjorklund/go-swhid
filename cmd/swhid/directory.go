@@ -15,6 +15,7 @@ var directoryCmd = &cobra.Command{
 		for _, arg := range args {
 			directory, err := swhid.NewDirectoryFromDir(arg)
 			if err != nil {
+				fmt.Printf("%s: %v\n", arg, err)
 				continue
 			}
 			fmt.Printf("%s\n", directory.Swhid())
