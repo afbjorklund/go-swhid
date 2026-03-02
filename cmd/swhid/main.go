@@ -14,6 +14,7 @@ var rootCmd = &cobra.Command{
 func main() {
 	rootCmd.AddCommand(contentCmd)
 	rootCmd.AddCommand(directoryCmd)
+	rootCmd.AddCommand(parseCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {

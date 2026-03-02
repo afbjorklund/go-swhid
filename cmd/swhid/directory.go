@@ -13,12 +13,20 @@ var directoryCmd = &cobra.Command{
 	Args:    cobra.ExactArgs(1),
 	Short:   "Compute a directory SWHID recursively",
 	Run: func(cmd *cobra.Command, args []string) {
+		swhid.DirectoryExclude = exclude
 		for _, arg := range args {
-			directory, err := swhid.NewDirectoryFromDir(arg)
+			directory, err := swhid.NewDirectoryFromPath(arg)
 			if err != nil {
+				fmt.Printf("%s: %v\n", arg, err)
 				continue
 			}
 			fmt.Printf("%s\n", directory.Swhid())
 		}
 	},
+}
+
+var exclude string
+
+func init() {
+	directoryCmd.PersistentFlags().StringVar(&exclude, "exclude", "", "Exclude files matching these suffixes (e.g., .tmp, .log)")
 }
