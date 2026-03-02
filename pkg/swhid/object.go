@@ -2,7 +2,10 @@ package swhid
 
 import (
 	"bytes"
+	"compress/zlib"
 	"fmt"
+	"os"
+	"path/filepath"
 )
 
 type Object struct {
@@ -23,7 +26,34 @@ func (o *Object) Bytes() []byte {
 	return content.Bytes()
 }
 
+var WriteObjects bool
+
 func NewObject(typ string, data []byte) *Object {
 	object := Object{Type: typ, Data: data}
+	if WriteObjects {
+		hash := NewHash(object.Bytes())
+		hex := hash.String()
+		_ = os.WriteFile(filepath.Join(".", "HEAD"), []byte("ref: refs/heads/master"), 0o644)
+		_ = os.MkdirAll(filepath.Join(".", ".swh", "refs"), 0o755)
+		path := filepath.Join(".", ".swh", "objects", hex[0:2], hex[2:])
+		_ = os.MkdirAll(filepath.Dir(path), 0o755)
+		f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0o644)
+		if err != nil {
+			return nil
+		}
+		z, err := zlib.NewWriterLevel(f, zlib.BestSpeed)
+		if err != nil {
+			return nil
+		}
+		_, err = z.Write(header(typ, int64(len(data))))
+		if err != nil {
+			return nil
+		}
+		_, err = z.Write(data)
+		if err != nil {
+			return nil
+		}
+		_ = z.Close()
+	}
 	return &object
 }

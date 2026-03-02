@@ -37,4 +37,6 @@ var file string
 
 func init() {
 	contentCmd.PersistentFlags().StringVar(&file, "file", "", "Path to file")
+
+	contentCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
 }

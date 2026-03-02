@@ -29,4 +29,6 @@ var exclude string
 
 func init() {
 	directoryCmd.PersistentFlags().StringVar(&exclude, "exclude", "", "Exclude files matching these suffixes (e.g., .tmp, .log)")
+
+	directoryCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
 }
