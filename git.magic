@@ -1,0 +1,11 @@
+0	string	blob\040
+>5	regex	[0-9]+		Git blob %s
+
+0	string	tree\040
+>5	regex	[0-9]+		Git tree %s
+
+0	string	commit\040
+>7	regex	[0-9]+		Git commit %s
+
+0	string	tag\040
+>4	regex	[0-9]+		Git tag %s
