@@ -33,7 +33,7 @@ func NewObject(typ string, data []byte) *Object {
 	if WriteObjects {
 		hash := NewHash(object.Bytes())
 		hex := hash.String()
-		_ = os.WriteFile(filepath.Join(".", "HEAD"), []byte("ref: refs/heads/master"), 0o644)
+		_ = os.WriteFile(filepath.Join(".", ".swh", "HEAD"), []byte("ref: refs/heads/master"), 0o644)
 		_ = os.MkdirAll(filepath.Join(".", ".swh", "refs"), 0o755)
 		path := filepath.Join(".", ".swh", "objects", hex[0:2], hex[2:])
 		_ = os.MkdirAll(filepath.Dir(path), 0o755)
