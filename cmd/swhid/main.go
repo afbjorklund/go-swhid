@@ -15,6 +15,7 @@ func main() {
 	rootCmd.AddCommand(contentCmd)
 	rootCmd.AddCommand(directoryCmd)
 	rootCmd.AddCommand(parseCmd)
+	rootCmd.AddCommand(verifyCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {
