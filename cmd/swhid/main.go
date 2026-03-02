@@ -7,12 +7,8 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:  "swhid",
-	RunE: run,
-}
-
-func run(cmd *cobra.Command, args []string) error {
-	return nil
+	Use:   "swhid",
+	Short: "Compute and parse SWHIDs (ISO/IEC 18670)",
 }
 
 func main() {
