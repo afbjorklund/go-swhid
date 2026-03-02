@@ -9,11 +9,9 @@ type Type = string
 const (
 	CONTENT   Type = "cnt"
 	DIRECTORY Type = "dir"
-	REVISION  Type = "rev"
-	RELEASE   Type = "rel"
-	SNAPSHOT  Type = "snp"
 )
 
+var Types = []Type{CONTENT, DIRECTORY}
 
 type Swhid struct {
 	Scheme  string
@@ -27,8 +25,8 @@ const (
 	VERSION = "1"
 )
 
-func NewSwhidFromObject(typ Type, objectType string, payload []byte) *Swhid {
-	return NewSwhid(typ, NewHash(objectType, payload))
+func NewSwhidFromObject(typ Type, object *Object) *Swhid {
+	return NewSwhid(typ, NewHash(object.Bytes()))
 }
 func NewSwhid(typ Type, hash Hash) *Swhid {
 	return &Swhid{Scheme: SCHEME, Version: VERSION, Type: typ, Hash: hash}

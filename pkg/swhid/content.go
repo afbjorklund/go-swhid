@@ -1,22 +1,14 @@
 package swhid
 
-// Content represents content data
 type Content struct {
-	Hash *Hash
+	Bytes []byte
 }
 
 func NewContent(bytes []byte) *Content {
-	return &Content{Hash: NewHash(BLOB, bytes)}
-}
-
-func NewContentFromFile(path string) (*Content, error) {
-	hash, err := NewHashFromFile(BLOB, path)
-	if err != nil {
-		return nil, err
-	}
-	return &Content{Hash: hash}, nil
+	return &Content{Bytes: bytes}
 }
 
 func (cnt *Content) Swhid() *Swhid {
-	return NewSwhid(CONTENT, cnt.Hash)
+	bytes := cnt.Bytes
+	return NewSwhidFromObject(CONTENT, NewObject("blob", bytes))
 }

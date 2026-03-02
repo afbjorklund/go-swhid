@@ -11,7 +11,7 @@ var directoryCmd = &cobra.Command{
 	Use:     "directory PATH",
 	Aliases: []string{"dir"},
 	Args:    cobra.ExactArgs(1),
-	Short:   "Compute a directory SWHID recursively",
+	Short:   "Compute SWHID for a directory recursively",
 	Run: func(cmd *cobra.Command, args []string) {
 		swhid.DirectoryExclude = exclude
 		for _, arg := range args {

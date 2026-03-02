@@ -10,9 +10,10 @@ import (
 )
 
 var contentCmd = &cobra.Command{
-	Use:   "content",
-	Short: "Compute a content SWHID from stdin",
-	Args:  cobra.NoArgs,
+	Use:     "content",
+	Aliases: []string{"cnt"},
+	Short:   "Compute SWHID from content from stdin",
+	Args:    cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		f := os.Stdin
 		var err error
