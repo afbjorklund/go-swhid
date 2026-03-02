@@ -16,7 +16,7 @@ func validateObjectType(objectType string) error {
 }
 
 func validateObjectHash(objectHash string) error {
-	if len(objectHash) == 40 {
+	if len(objectHash) == HashLength {
 		return nil
 	}
 	return fmt.Errorf("invalid object hash : %s", objectHash)
