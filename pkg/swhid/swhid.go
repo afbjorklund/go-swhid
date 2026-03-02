@@ -27,6 +27,9 @@ const (
 	VERSION = "1"
 )
 
+func NewSwhidFromObject(typ Type, objectType string, payload []byte) *Swhid {
+	return NewSwhid(typ, NewHash(objectType, payload))
+}
 func NewSwhid(typ Type, hash Hash) *Swhid {
 	return &Swhid{Scheme: SCHEME, Version: VERSION, Type: typ, Hash: hash}
 }
