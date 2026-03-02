@@ -14,20 +14,23 @@ const (
 	SNAPSHOT  Type = "snp"
 )
 
-type Swhid struct {
-	Type Type
-	Hash *Hash
-}
 
-func NewSwhid(typ Type, hash *Hash) *Swhid {
-	return &Swhid{Type: typ, Hash: hash}
+type Swhid struct {
+	Scheme  string
+	Version string
+	Type    Type
+	Hash    Hash
 }
 
 const (
 	SCHEME  = "swh"
-	VERSION = 1
+	VERSION = "1"
 )
 
+func NewSwhid(typ Type, hash Hash) *Swhid {
+	return &Swhid{Scheme: SCHEME, Version: VERSION, Type: typ, Hash: hash}
+}
+
 func (swhid *Swhid) String() string {
-	return fmt.Sprintf("%s:%d:%s:%s", SCHEME, VERSION, swhid.Type, swhid.Hash)
+	return fmt.Sprintf("%s:%s:%s:%s", swhid.Scheme, swhid.Version, swhid.Type, swhid.Hash)
 }
