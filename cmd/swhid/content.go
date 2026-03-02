@@ -12,12 +12,28 @@ import (
 var contentCmd = &cobra.Command{
 	Use:   "content",
 	Short: "Compute a content SWHID from stdin",
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		bytes, err := io.ReadAll(os.Stdin)
+		f := os.Stdin
+		var err error
+		if file != "" {
+			f, err = os.Open(file)
+			if err != nil {
+				return
+			}
+			defer f.Close()
+		}
+		bytes, err := io.ReadAll(f)
 		if err != nil {
 			return
 		}
 		content := swhid.NewContent(bytes)
 		fmt.Printf("%s\n", content.Swhid())
 	},
+}
+
+var file string
+
+func init() {
+	contentCmd.PersistentFlags().StringVar(&file, "file", "", "Path to file")
 }
