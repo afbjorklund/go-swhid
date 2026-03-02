@@ -9,9 +9,12 @@ type Type = string
 const (
 	CONTENT   Type = "cnt"
 	DIRECTORY Type = "dir"
+	REVISION  Type = "rev"
+	RELEASE   Type = "rel"
+	SNAPSHOT  Type = "snp"
 )
 
-var Types = []Type{CONTENT, DIRECTORY}
+var Types = []Type{CONTENT, DIRECTORY, REVISION, RELEASE, SNAPSHOT}
 
 type Swhid struct {
 	Scheme  string

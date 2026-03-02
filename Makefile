@@ -1,13 +1,15 @@
 
 GO = go
 
+GOTAGS = "git"
+
 .PHONY: build
 build:
-	$(GO) build ./cmd/swhid/...
+	$(GO) build -tags "$(GOTAGS)" ./cmd/swhid/...
 
 .PHONY: test
 test:
-	$(GO) test ./pkg/swhid/...
+	$(GO) test -tags "$(GOTAGS)" ./pkg/swhid/...
 
 .PHONY: lint
 lint:

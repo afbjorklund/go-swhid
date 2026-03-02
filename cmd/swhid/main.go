@@ -14,6 +14,9 @@ var rootCmd = &cobra.Command{
 func main() {
 	rootCmd.AddCommand(contentCmd)
 	rootCmd.AddCommand(directoryCmd)
+	if gitCmd != nil {
+		rootCmd.AddCommand(gitCmd)
+	}
 	rootCmd.AddCommand(parseCmd)
 	rootCmd.AddCommand(verifyCmd)
 
