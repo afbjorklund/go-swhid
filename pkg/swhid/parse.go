@@ -1,7 +1,6 @@
 package swhid
 
 import (
-	"encoding/hex"
 	"fmt"
 	"strings"
 )
@@ -51,7 +50,7 @@ func Parse(str string) (*Swhid, error) {
 		return nil, err
 	}
 
-	hash, err := hex.DecodeString(objectHash)
+	hash, err := NewHashFromString(objectHash)
 	if err != nil {
 		return nil, err
 	}

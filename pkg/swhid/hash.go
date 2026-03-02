@@ -20,6 +20,10 @@ func NewHash(payload []byte) Hash {
 	return hash.Sum([]byte{})
 }
 
+func NewHashFromString(str string) (Hash, error) {
+	return hex.DecodeString(str)
+}
+
 func (hash Hash) String() string {
 	return hex.EncodeToString(hash)
 }
