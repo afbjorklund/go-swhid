@@ -17,6 +17,6 @@ func TestHashDecode(t *testing.T) {
 	hash, err := NewHashFromString("da39a3ee5e6b4b0d3255bfef95601890afd80709")
 	assert.Nil(t, err)
 	assert.Equal(t, NewHash([]byte{}), hash)
-	hash, err = NewHashFromString("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+	_, err = NewHashFromString("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 	assert.Error(t, err)
 }
