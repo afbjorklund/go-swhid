@@ -9,7 +9,6 @@ import (
 
 var parseCmd = &cobra.Command{
 	Use:     "parse",
-	Aliases: []string{"dir"},
 	Short:   "Parse/pretty-print a (qualified) SWHID",
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
