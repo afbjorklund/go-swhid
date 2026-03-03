@@ -1,6 +1,7 @@
 package swhid
 
 import (
+	"bytes"
 	//"encoding/hex"
 	//"fmt"
 	"io/fs"
@@ -34,17 +35,17 @@ func (dir *Directory) serialized() []byte {
 		}
 		return a < b
 	})
-	bytes := []byte{}
+	bytes := bytes.Buffer{}
 	for _, entry := range entries {
 		perms := permissions(entry.mode)
 		//fmt.Printf("%s %s %s\n", perms, entry.name, hex.EncodeToString(entry.target))
-		bytes = append(bytes, []byte(perms)...)
-		bytes = append(bytes, byte(' '))
-		bytes = append(bytes, []byte(entry.name)...)
-		bytes = append(bytes, byte('\000'))
-		bytes = append(bytes, entry.target...)
+		bytes.Write([]byte(perms))
+		bytes.WriteByte(byte(' '))
+		bytes.Write([]byte(entry.name))
+		bytes.WriteByte(byte('\000'))
+		bytes.Write(entry.target)
 	}
-	return bytes
+	return bytes.Bytes()
 }
 
 func (dir *Directory) Swhid() *Swhid {

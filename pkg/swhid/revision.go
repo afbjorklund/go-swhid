@@ -1,6 +1,7 @@
 package swhid
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -18,26 +19,26 @@ func NewRevision() *Revision {
 }
 
 func (rev *Revision) serialized() []byte {
-	bytes := []byte{}
-	bytes = append(bytes, []byte(fmt.Sprintf("tree %s\n", rev.Directory))...)
+	bytes := bytes.Buffer{}
+	bytes.WriteString(fmt.Sprintf("tree %s\n", rev.Directory))
 	if len(rev.Parents) > 0 {
-		bytes = append(bytes, []byte(fmt.Sprintf("parent %s\n", rev.Parents[0]))...)
+		bytes.WriteString(fmt.Sprintf("parent %s\n", rev.Parents[0]))
 	}
-	bytes = append(bytes, []byte(fmt.Sprintf("author %s\n", rev.Author))...)
-	bytes = append(bytes, []byte(fmt.Sprintf("committer %s\n", rev.Committer))...)
+	bytes.WriteString(fmt.Sprintf("author %s\n", rev.Author))
+	bytes.WriteString(fmt.Sprintf("committer %s\n", rev.Committer))
 	if rev.ExtraHeaders != nil {
 		for _, key := range rev.ExtraHeaders {
 			val := rev.ExtraHeaders[key]
-			bytes = append(bytes, []byte(key)...)
-			bytes = append(bytes, []byte(val)...)
+			bytes.WriteString(key)
+			bytes.WriteString(val)
 		}
 	}
 	if rev.Message != "" {
-		bytes = append(bytes, '\n')
-		bytes = append(bytes, []byte(rev.Message)...)
+		bytes.WriteByte('\n')
+		bytes.WriteString(rev.Message)
 	}
-	//fmt.Printf(string(bytes))
-	return bytes
+	//fmt.Print(bytes.String())
+	return bytes.Bytes()
 }
 
 func (rev *Revision) Swhid() *Swhid {

@@ -1,6 +1,7 @@
 package swhid
 
 import (
+	"bytes"
 	"fmt"
 	"sort"
 )
@@ -20,21 +21,21 @@ func NewSnapshot(branches []*Branch) *Snapshot {
 }
 
 func (snp *Snapshot) serialized() []byte {
-	bytes := []byte{}
+	bytes := bytes.Buffer{}
 	branches := snp.Branches
 	sort.Slice(branches, func(a, b int) bool { return branches[a].Name < branches[b].Name })
 	for _, branch := range branches {
 		fmt.Printf("%s %s\000%d:%s", branch.TargetType, branch.Name, len(branch.Target), branch.Target)
-		bytes = append(bytes, []byte(branch.TargetType)...)
-		bytes = append(bytes, ' ')
-		bytes = append(bytes, []byte(branch.Name)...)
-		bytes = append(bytes, '\000')
-		bytes = append(bytes, []byte(fmt.Sprintf("%d", len(branch.Target)))...)
-		bytes = append(bytes, ':')
-		bytes = append(bytes, branch.Target...)
+		bytes.WriteString(branch.TargetType)
+		bytes.WriteByte(' ')
+		bytes.WriteString(branch.Name)
+		bytes.WriteByte('\000')
+		bytes.WriteString(fmt.Sprintf("%d", len(branch.Target)))
+		bytes.WriteByte(':')
+		bytes.Write(branch.Target)
 	}
-	//fmt.Printf(string(bytes))
-	return bytes
+	//fmt.Print(bytes.String())
+	return bytes.Bytes()
 }
 
 func (snp *Snapshot) Swhid() *Swhid {

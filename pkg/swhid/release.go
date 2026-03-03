@@ -1,6 +1,7 @@
 package swhid
 
 import (
+	"bytes"
 	"fmt"
 )
 
@@ -18,24 +19,24 @@ func NewRelease() *Release {
 }
 
 func (rel *Release) serialized() []byte {
-	bytes := []byte{}
-	bytes = append(bytes, []byte(fmt.Sprintf("object %s\n", rel.Object))...)
-	bytes = append(bytes, []byte(fmt.Sprintf("type %s\n", rel.ObjectType))...)
-	bytes = append(bytes, []byte(fmt.Sprintf("tag %s\n", rel.Tag))...)
-	bytes = append(bytes, []byte(fmt.Sprintf("tagger %s\n", rel.Tagger))...)
+	bytes := bytes.Buffer{}
+	bytes.WriteString(fmt.Sprintf("object %s\n", rel.Object))
+	bytes.WriteString(fmt.Sprintf("type %s\n", rel.ObjectType))
+	bytes.WriteString(fmt.Sprintf("tag %s\n", rel.Tag))
+	bytes.WriteString(fmt.Sprintf("tagger %s\n", rel.Tagger))
 	if rel.ExtraHeaders != nil {
 		for _, key := range rel.ExtraHeaders {
 			val := rel.ExtraHeaders[key]
-			bytes = append(bytes, []byte(key)...)
-			bytes = append(bytes, []byte(val)...)
+			bytes.WriteString(key)
+			bytes.WriteString(val)
 		}
 	}
 	if rel.Message != nil {
-		bytes = append(bytes, '\n')
-		bytes = append(bytes, []byte(*rel.Message)...)
+		bytes.WriteByte('\n')
+		bytes.WriteString(*rel.Message)
 	}
-	//fmt.Print(string(bytes))
-	return bytes
+	//fmt.Print(bytes.String())
+	return bytes.Bytes()
 }
 
 func (rel *Release) Swhid() *Swhid {
