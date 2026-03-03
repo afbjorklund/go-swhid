@@ -8,9 +8,9 @@ import (
 )
 
 var parseCmd = &cobra.Command{
-	Use:     "parse",
-	Short:   "Parse/pretty-print a (qualified) SWHID",
-	Args:    cobra.ExactArgs(1),
+	Use:   "parse",
+	Short: "Parse/pretty-print a (qualified) SWHID",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		swhid, err := swhid.Parse(args[0])
 		if err != nil {
