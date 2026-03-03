@@ -1,7 +1,7 @@
 
 GO = go
 
-GOTAGS = "git"
+GOTAGS = git
 
 .PHONY: build
 build:
@@ -21,6 +21,6 @@ fix:
 
 .PHONY: cover
 cover:
-	$(GO) test -tags $(GOTAGS) -coverprofile=coverage.out ./pkg/...
+	$(GO) test -tags "$(GOTAGS)" -coverprofile=coverage.out ./pkg/...
 	$(GO) tool cover -html=coverage.out -o coverage.html
 	$(GO) tool cover -func=coverage.out | grep -v 100.0
