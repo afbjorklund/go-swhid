@@ -26,9 +26,12 @@ func Parse(str string) (*Swhid, error) {
 		return nil, fmt.Errorf("swhid string cannot be empty")
 	}
 
-	parts := strings.Split(str, ";")
+	parts := strings.SplitN(str, ";", 2)
 	core := parts[0]
-	//qualifiers = parts[1]
+	qualifiers := ""
+	if len(parts) > 1 {
+		qualifiers = parts[1]
+	}
 
 	parts = strings.Split(core, ":")
 	if len(parts) != 4 {
@@ -55,5 +58,12 @@ func Parse(str string) (*Swhid, error) {
 		return nil, err
 	}
 
-	return NewSwhid(objectType, hash), nil
+	id := NewSwhid(objectType, hash)
+
+	id.Qualifiers, err = NewQualifiers(qualifiers)
+	if err != nil {
+		return nil, err
+	}
+
+	return id, nil
 }

@@ -17,10 +17,13 @@ const (
 var Types = []Type{CONTENT, DIRECTORY, REVISION, RELEASE, SNAPSHOT}
 
 type Swhid struct {
+	// Core Identifier
 	Scheme  string
 	Version string
 	Type    Type
 	Hash    Hash
+
+	Qualifiers Qualifiers
 }
 
 const (
@@ -36,5 +39,9 @@ func NewSwhid(typ Type, hash Hash) *Swhid {
 }
 
 func (swhid *Swhid) String() string {
-	return fmt.Sprintf("%s:%s:%s:%s", swhid.Scheme, swhid.Version, swhid.Type, swhid.Hash)
+	core := fmt.Sprintf("%s:%s:%s:%s", swhid.Scheme, swhid.Version, swhid.Type, swhid.Hash)
+	if len(swhid.Qualifiers) == 0 {
+		return core
+	}
+	return fmt.Sprintf("%s;%s", core, swhid.Qualifiers)
 }
