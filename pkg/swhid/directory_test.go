@@ -22,14 +22,6 @@ func TestPermissions(t *testing.T) {
 	assert.Equal(t, "", permissions(fs.ModeDevice))
 }
 
-func repeat(b byte, n int) []byte {
-	result := []byte{}
-	for i := 0; i < n; i++ {
-		result = append(result, b)
-	}
-	return result
-}
-
 func TestDirectoryFromDir(t *testing.T) {
 	entries := []*Entry{}
 	entries = append(entries, &Entry{name: "a.txt", mode: 0o100644, target: repeat(1, 20)})
