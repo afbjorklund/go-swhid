@@ -40,7 +40,6 @@ func TestDirectorySorting(t *testing.T) {
 	swhid1 := NewDirectory(entries).Swhid()
 	sort.Slice(entries, func(a, b int) bool { return entries[a].name < entries[b].name })
 	swhid2 := NewDirectory(entries).Swhid()
-	t.Logf("%o", fs.ModeDir)
 	assert.Equal(t, swhid1.Hash, swhid2.Hash)
 }
 

@@ -2,7 +2,6 @@
 package swhid
 
 import (
-	"fmt"
 	"strings"
 
 	"gopkg.in/src-d/go-git.v4"
@@ -167,7 +166,6 @@ func (repo *Repository) NewSnapshot() (*Snapshot, error) {
 			if err != nil {
 				 return err
 			}
-			fmt.Printf("%s\n", name)
 			target = rel.Swhid().Hash
 		} else {
 			return nil
