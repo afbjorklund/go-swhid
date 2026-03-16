@@ -1,23 +1,29 @@
 package swhid
 
 import (
-	"crypto/sha1"
 	"encoding/hex"
+	"fmt"
 	"hash"
+
+	"github.com/pjbgf/sha1cd"
 )
 
 type Hash []byte
 
 func HashFunction() hash.Hash {
-	return sha1.New()
+	return sha1cd.New()
 }
 
-var HashLength = sha1.Size * 2
+var HashLength = sha1cd.Size * 2
 
 func NewHash(payload []byte) (Hash, error) {
-	hash := HashFunction()
+	hash := HashFunction().(sha1cd.CollisionResistantHash)
 	hash.Write(payload)
-	return hash.Sum([]byte{}), nil
+	h, c := hash.CollisionResistantSum([]byte{})
+	if c {
+		return nil, fmt.Errorf("collision detected")
+	}
+	return h, nil
 }
 
 func NewHashFromString(str string) (Hash, error) {
