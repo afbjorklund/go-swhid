@@ -31,7 +31,11 @@ var WriteObjects bool
 func NewObject(typ string, data []byte) *Object {
 	object := Object{Type: typ, Data: data}
 	if WriteObjects {
-		hash := NewHash(object.Bytes())
+		hash, err := NewHash(object.Bytes())
+		if err != nil {
+			// TODO: return error
+			return nil
+		}
 		hex := hash.String()
 		_ = os.WriteFile(filepath.Join(".", ".swh", "HEAD"), []byte("ref: refs/heads/master"), 0o644)
 		_ = os.MkdirAll(filepath.Join(".", ".swh", "refs"), 0o755)

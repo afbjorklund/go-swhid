@@ -14,10 +14,10 @@ func HashFunction() hash.Hash {
 
 var HashLength = sha1.Size * 2
 
-func NewHash(payload []byte) Hash {
+func NewHash(payload []byte) (Hash, error) {
 	hash := HashFunction()
 	hash.Write(payload)
-	return hash.Sum([]byte{})
+	return hash.Sum([]byte{}), nil
 }
 
 func NewHashFromString(str string) (Hash, error) {

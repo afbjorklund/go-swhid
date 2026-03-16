@@ -11,7 +11,7 @@ func newHashFromDir(typ string, path string) (Hash, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewHash(NewObject(typ, tree.serialized()).Bytes()), nil
+	return NewHash(NewObject(typ, tree.serialized()).Bytes())
 }
 
 func newHashFromFile(typ string, path string) (Hash, error) {
@@ -19,7 +19,7 @@ func newHashFromFile(typ string, path string) (Hash, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewHash(NewObject(typ, bytes).Bytes()), nil
+	return NewHash(NewObject(typ, bytes).Bytes())
 }
 
 func NewHashFromPath(path string, info os.FileInfo) (Hash, error) {

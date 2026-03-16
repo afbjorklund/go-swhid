@@ -32,7 +32,13 @@ const (
 )
 
 func NewSwhidFromObject(typ Type, object *Object) *Swhid {
-	return NewSwhid(typ, NewHash(object.Bytes()))
+	hash, err := NewHash(object.Bytes())
+	if err != nil {
+		//TODO: return error
+		return nil
+	}
+	return NewSwhid(typ, hash)
+
 }
 func NewSwhid(typ Type, hash Hash) *Swhid {
 	return &Swhid{Scheme: SCHEME, Version: VERSION, Type: typ, Hash: hash}

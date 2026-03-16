@@ -15,7 +15,8 @@ import (
 func TestNewHashFromHash(t *testing.T) {
 	h := Hash(make([]byte, 20))
 	assert.Equal(t, h, NewHashFromHash(plumbing.ZeroHash))
-	h = NewHash(NewObject("blob", []byte{}).Bytes())
+	h, err := NewHash(NewObject("blob", []byte{}).Bytes())
+	assert.Nil(t, err)
 	assert.Equal(t, h, NewHashFromHash(plumbing.ComputeHash(plumbing.BlobObject, []byte{})))
 }
 
