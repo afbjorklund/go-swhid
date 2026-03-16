@@ -8,6 +8,8 @@ linters:
     rules:
       - source: "^\\s*defer\\s+"
         linters: ["errcheck"]
+      - source: "WriteString\\(fmt.Sprintf\\(.*\\)\\)"
+        linters: ["staticcheck"]
 formatters:
   enable:
     - gofmt
