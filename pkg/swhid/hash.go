@@ -9,11 +9,9 @@ import (
 )
 
 type Hash []byte
+type HashFunc func() hash.Hash
 
-func HashFunction() hash.Hash {
-	return sha1cd.New()
-}
-
+var HashFunction HashFunc = sha1cd.New
 var HashLength = sha1cd.Size * 2
 
 func NewHash(payload []byte) (Hash, error) {
