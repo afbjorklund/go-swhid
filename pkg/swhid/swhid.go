@@ -31,6 +31,8 @@ const (
 	VERSION = "1"
 )
 
+var Version = VERSION
+
 func NewSwhidFromObject(typ Type, object *Object) *Swhid {
 	hash, err := NewHash(object.Bytes())
 	if err != nil {
@@ -41,7 +43,7 @@ func NewSwhidFromObject(typ Type, object *Object) *Swhid {
 
 }
 func NewSwhid(typ Type, hash Hash) *Swhid {
-	return &Swhid{Scheme: SCHEME, Version: VERSION, Type: typ, Hash: hash}
+	return &Swhid{Scheme: SCHEME, Version: Version, Type: typ, Hash: hash}
 }
 
 func (swhid *Swhid) String() string {
