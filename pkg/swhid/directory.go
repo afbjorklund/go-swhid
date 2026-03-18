@@ -2,8 +2,6 @@ package swhid
 
 import (
 	"bytes"
-	//"encoding/hex"
-	//"fmt"
 	"io/fs"
 	"sort"
 )
@@ -38,7 +36,6 @@ func (dir *Directory) serialized() []byte {
 	bytes := bytes.Buffer{}
 	for _, entry := range entries {
 		perms := permissions(entry.mode)
-		//fmt.Printf("%s %s %s\n", perms, entry.name, hex.EncodeToString(entry.target))
 		bytes.Write([]byte(perms))
 		bytes.WriteByte(byte(' '))
 		bytes.Write([]byte(entry.name))
