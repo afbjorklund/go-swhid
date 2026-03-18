@@ -1,7 +1,6 @@
 package swhid
 
 import (
-	"bytes"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/base32"
@@ -9,8 +8,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"hash"
-	"io"
-	"strings"
 
 	"github.com/pjbgf/sha1cd"
 )
@@ -26,8 +23,8 @@ var HashBytes = sha1cd.Size
 var HashLength = sha1cd.Size * 2
 
 var HashEncoding string = "hex"
-var HashDecode = hex.DecodeString
-var HashEncode = hex.EncodeToString
+var HashDecode Decode = hex.DecodeString
+var HashEncode Encode = hex.EncodeToString
 var HashSize = 2.0
 
 func SetHash(name string) error {
@@ -71,6 +68,8 @@ func NewHash(payload []byte) (Hash, error) {
 
 var base32hex = base32.HexEncoding.WithPadding(base32.NoPadding)
 
+var base64url = base64.RawURLEncoding.WithPadding(base64.NoPadding)
+
 func SetEncoding(name string) error {
 	switch name {
 	case "hex":
@@ -89,17 +88,8 @@ func SetEncoding(name string) error {
 		return nil
 	case "base64url":
 		HashEncoding = name
-		HashDecode = func(s string) ([]byte, error) {
-			r := strings.NewReader(s)
-			d := base64.NewDecoder(base64.RawURLEncoding, r)
-			return io.ReadAll(d)
-		}
-		HashEncode = func(h []byte) string {
-			w := &bytes.Buffer{}
-			e := base64.NewEncoder(base64.RawURLEncoding, w)
-			_, _ = e.Write(h)
-			return w.String()
-		}
+		HashDecode = base64url.DecodeString
+		HashEncode = base64url.EncodeToString
 		HashSize = 4.0 / 3.0
 		_ = SetHash(HashName)
 		return nil
