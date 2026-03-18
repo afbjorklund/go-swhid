@@ -7,6 +7,7 @@ import (
 )
 
 func TestHash(t *testing.T) {
+	assert.Equal(t, 40, HashLength)
 	// SHA-1
 	hash, err := NewHash([]byte{})
 	assert.Nil(t, err)
@@ -34,6 +35,7 @@ func TestHash256(t *testing.T) {
 func TestHashB32(t *testing.T) {
 	old := HashEncoding
 	SetEncoding("base32hex")
+	assert.Equal(t, 32, HashLength)
 	// SHA-1
 	hash, err := NewHash([]byte{})
 	assert.Nil(t, err)
@@ -48,6 +50,7 @@ func TestHashB32(t *testing.T) {
 func TestHashB64(t *testing.T) {
 	old := HashEncoding
 	SetEncoding("base64url")
+	assert.Equal(t, 26, HashLength)
 	// SHA-1
 	hash, err := NewHash([]byte{})
 	assert.Nil(t, err)

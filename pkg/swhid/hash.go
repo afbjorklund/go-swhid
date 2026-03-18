@@ -22,28 +22,30 @@ type Encode func([]byte) string
 
 var HashName string = "sha1cd"
 var HashFunction HashFunc = sha1cd.New
+var HashBytes = sha1cd.Size
 var HashLength = sha1cd.Size * 2
 
 var HashEncoding string = "hex"
 var HashDecode = hex.DecodeString
 var HashEncode = hex.EncodeToString
+var HashSize = 2.0
 
 func SetHash(name string) error {
 	switch name {
 	case "sha1":
 		HashName = name
 		HashFunction = sha1.New
-		HashLength = sha1.Size * 2
+		HashLength = int(sha1.Size * HashSize)
 		return nil
 	case "sha1cd":
 		HashName = name
 		HashFunction = sha1cd.New
-		HashLength = sha1cd.Size * 2
+		HashLength = int(sha1cd.Size * HashSize)
 		return nil
 	case "sha256":
 		HashName = name
 		HashFunction = sha256.New
-		HashLength = sha256.Size * 2
+		HashLength = int(sha256.Size * HashSize)
 		return nil
 	}
 	return fmt.Errorf("Unknown hash: %s", name)
@@ -75,11 +77,15 @@ func SetEncoding(name string) error {
 		HashEncoding = name
 		HashDecode = hex.DecodeString
 		HashEncode = hex.EncodeToString
+		HashSize = 2.0
+		SetHash(HashName)
 		return nil
 	case "base32hex":
 		HashEncoding = name
 		HashDecode = base32hex.DecodeString
 		HashEncode = base32hex.EncodeToString
+		HashSize = 1.6
+		SetHash(HashName)
 		return nil
 	case "base64url":
 		HashEncoding = name
@@ -94,10 +100,12 @@ func SetEncoding(name string) error {
 			_, _ = e.Write(h)
 			return w.String()
 		}
+		HashSize = 4.0 / 3.0
+		SetHash(HashName)
+		return nil
 	}
 	return fmt.Errorf("Unknown encoding: %s", name)
 }
-
 
 func NewHashFromString(str string) (Hash, error) {
 	return HashDecode(str)
