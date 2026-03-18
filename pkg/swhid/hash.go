@@ -48,7 +48,7 @@ func SetHash(name string) error {
 		HashLength = int(sha256.Size * HashSize)
 		return nil
 	}
-	return fmt.Errorf("Unknown hash: %s", name)
+	return fmt.Errorf("unknown hash: %s", name)
 }
 
 func NewHash(payload []byte) (Hash, error) {
@@ -78,14 +78,14 @@ func SetEncoding(name string) error {
 		HashDecode = hex.DecodeString
 		HashEncode = hex.EncodeToString
 		HashSize = 2.0
-		SetHash(HashName)
+		_ = SetHash(HashName)
 		return nil
 	case "base32hex":
 		HashEncoding = name
 		HashDecode = base32hex.DecodeString
 		HashEncode = base32hex.EncodeToString
 		HashSize = 1.6
-		SetHash(HashName)
+		_ = SetHash(HashName)
 		return nil
 	case "base64url":
 		HashEncoding = name
@@ -101,10 +101,10 @@ func SetEncoding(name string) error {
 			return w.String()
 		}
 		HashSize = 4.0 / 3.0
-		SetHash(HashName)
+		_ = SetHash(HashName)
 		return nil
 	}
-	return fmt.Errorf("Unknown encoding: %s", name)
+	return fmt.Errorf("unknown encoding: %s", name)
 }
 
 func NewHashFromString(str string) (Hash, error) {

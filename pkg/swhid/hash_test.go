@@ -20,7 +20,8 @@ func TestHash(t *testing.T) {
 
 func TestHash256(t *testing.T) {
 	old := HashName
-	SetHash("sha256")
+	err := SetHash("sha256")
+	assert.Nil(t, err)
 	// SHA-1
 	hash, err := NewHash([]byte{})
 	assert.Nil(t, err)
@@ -29,12 +30,13 @@ func TestHash256(t *testing.T) {
 	hash, err = NewHash([]byte("blob 0\000"))
 	assert.Nil(t, err)
 	assert.Equal(t, "473a0f4c3be8a93681a267e3b1e9a7dcda1185436fe141f7749120a303721813", hash.String())
-	SetHash(old)
+	_ = SetHash(old)
 }
 
 func TestHashB32(t *testing.T) {
 	old := HashEncoding
-	SetEncoding("base32hex")
+	err := SetEncoding("base32hex")
+	assert.Nil(t, err)
 	assert.Equal(t, 32, HashLength)
 	// SHA-1
 	hash, err := NewHash([]byte{})
@@ -44,12 +46,13 @@ func TestHashB32(t *testing.T) {
 	hash, err = NewHash([]byte("blob 0\000"))
 	assert.Nil(t, err)
 	assert.Equal(t, "SQEU56TIQ7B46ISB56N7EMMOOBI8OKSH", hash.String())
-	SetEncoding(old)
+	_ = SetEncoding(old)
 }
 
 func TestHashB64(t *testing.T) {
 	old := HashEncoding
-	SetEncoding("base64url")
+	err := SetEncoding("base64url")
+	assert.Nil(t, err)
 	assert.Equal(t, 26, HashLength)
 	// SHA-1
 	hash, err := NewHash([]byte{})
@@ -59,7 +62,7 @@ func TestHashB64(t *testing.T) {
 	hash, err = NewHash([]byte("blob 0\000"))
 	assert.Nil(t, err)
 	assert.Equal(t, "5p3im7LR1kNLiymud1rYwuSM", hash.String())
-	SetEncoding(old)
+	_ = SetEncoding(old)
 }
 
 func TestHashDecode(t *testing.T) {
@@ -74,7 +77,8 @@ func TestHashDecode(t *testing.T) {
 
 func TestHashDecode256(t *testing.T) {
 	old := HashName
-	SetHash("sha256")
+	err := SetHash("sha256")
+	assert.Nil(t, err)
 	hash, err := NewHashFromString("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
 	assert.Nil(t, err)
 	h, err := NewHash([]byte{})
@@ -82,5 +86,5 @@ func TestHashDecode256(t *testing.T) {
 	assert.Equal(t, h, hash)
 	_, err = NewHashFromString("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 	assert.Error(t, err)
-	SetHash(old)
+	_ = SetHash(old)
 }
