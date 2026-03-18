@@ -23,6 +23,7 @@ func TestWriteObjects(t *testing.T) {
 	assert.Nil(t, err)
 	WriteObjects = true
 	object := NewObject("blob", []byte{})
+	WriteObjects = false
 	st, err := os.Stat(filepath.Join(dir, ".swh"))
 	assert.Nil(t, err)
 	assert.True(t, st.Mode().IsDir())
