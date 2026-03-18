@@ -8,15 +8,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "swhid",
-	Short: "Compute and parse SWHIDs (ISO/IEC 18670)",
-}
-
 var version string
 
 var hashName string
 var hashEncoding string
+
+var rootCmd = &cobra.Command{
+	Use:   "swhid",
+	Short: "Compute and parse SWHIDs (ISO/IEC 18670)",
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		swhid.Version = version
+		if err := swhid.SetHash(hashName); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
+		if err := swhid.SetEncoding(hashEncoding); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			os.Exit(1)
+		}
+	},
+}
 
 func init() {
 	rootCmd.AddCommand(contentCmd)
@@ -33,15 +44,6 @@ func init() {
 }
 
 func main() {
-	swhid.Version = version
-	if err := swhid.SetHash(hashName); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
-	}
-	if err := swhid.SetEncoding(hashEncoding); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
-	}
 
 	err := rootCmd.Execute()
 	if err != nil {
