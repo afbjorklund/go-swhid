@@ -42,7 +42,7 @@ func NewContentFromPath(path string) (*Content, error) {
 	return NewContent(bytes), nil
 }
 
-var DirectoryExclude string
+var DirectoryExcludes []string
 
 func NewDirectoryFromPath(path string) (*Directory, error) {
 	entries := []*Entry{}
@@ -50,13 +50,16 @@ func NewDirectoryFromPath(path string) (*Directory, error) {
 	if err != nil {
 		return nil, err
 	}
+outer:
 	for _, d := range e {
 		name := d.Name()
 		if name == "." || name == ".." {
 			continue
 		}
-		if filepath.Ext(name) == DirectoryExclude {
-			continue
+		for _, exclude := range DirectoryExcludes {
+			if filepath.Ext(name) == exclude {
+				continue outer
+			}
 		}
 		filepath := filepath.Join(path, name)
 		info, err := d.Info()
