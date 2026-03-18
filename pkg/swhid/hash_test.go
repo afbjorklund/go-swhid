@@ -31,6 +31,20 @@ func TestHash256(t *testing.T) {
 	SetHash(old)
 }
 
+func TestHashB32(t *testing.T) {
+	old := HashEncoding
+	SetEncoding("base32hex")
+	// SHA-1
+	hash, err := NewHash([]byte{})
+	assert.Nil(t, err)
+	assert.Equal(t, "R8SQ7RIUDD5GQCILNVNPAO0OI2NTG1O9", hash.String())
+	// gitoid
+	hash, err = NewHash([]byte("blob 0\000"))
+	assert.Nil(t, err)
+	assert.Equal(t, "SQEU56TIQ7B46ISB56N7EMMOOBI8OKSH", hash.String())
+	SetEncoding(old)
+}
+
 func TestHashB64(t *testing.T) {
 	old := HashEncoding
 	SetEncoding("base64url")

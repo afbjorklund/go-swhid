@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"crypto/sha256"
+	"encoding/base32"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
@@ -66,12 +67,19 @@ func NewHash(payload []byte) (Hash, error) {
 	return h, nil
 }
 
+var base32hex = base32.HexEncoding.WithPadding(base32.NoPadding)
+
 func SetEncoding(name string) error {
 	switch name {
 	case "hex":
 		HashEncoding = name
 		HashDecode = hex.DecodeString
 		HashEncode = hex.EncodeToString
+		return nil
+	case "base32hex":
+		HashEncoding = name
+		HashDecode = base32hex.DecodeString
+		HashEncode = base32hex.EncodeToString
 		return nil
 	case "base64url":
 		HashEncoding = name
