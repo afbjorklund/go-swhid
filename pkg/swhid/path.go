@@ -57,7 +57,7 @@ outer:
 			continue
 		}
 		for _, exclude := range DirectoryExcludes {
-			if filepath.Ext(name) == exclude {
+			if name == exclude || filepath.Ext(name) == exclude {
 				continue outer
 			}
 		}
