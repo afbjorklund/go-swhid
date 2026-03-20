@@ -1,4 +1,5 @@
 //go:build git
+
 package swhid
 
 import (
@@ -100,7 +101,7 @@ func TestGitBranches(t *testing.T) {
 	assert.Error(t, err)
 	err = os.Chmod(path+"/.git/refs/heads", 0o775)
 	assert.Nil(t, err)
-	branchConfig := config.Branch{Name:"master", Merge:"refs/heads/master"}
+	branchConfig := config.Branch{Name: "master", Merge: "refs/heads/master"}
 	err = repo.Repo.CreateBranch(&branchConfig)
 	worktree, err := repo.Repo.Worktree()
 	assert.Nil(t, err)

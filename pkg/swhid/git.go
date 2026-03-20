@@ -1,4 +1,5 @@
 //go:build git
+
 package swhid
 
 import (
@@ -143,28 +144,28 @@ func (repo *Repository) NewSnapshot() (*Snapshot, error) {
 		targetType := ""
 		target := []byte{}
 		if refname.IsBranch() {
-			 _, err := repo.Repo.Branch(ref.Name().Short())
-			 if err != nil {
-				 return err
-			 }
+			_, err := repo.Repo.Branch(ref.Name().Short())
+			if err != nil {
+				return err
+			}
 			targetType = "revision"
 			rev, err := repo.NewRevisionFromHash(ref.Hash().String())
-			 if err != nil {
-				 return err
-			 }
+			if err != nil {
+				return err
+			}
 			target = rev.Swhid().Hash
 		} else if refname.IsTag() {
-			 _, err := repo.Repo.TagObject(ref.Hash())
-			 if err == plumbing.ErrObjectNotFound {
-				 return nil // unannotated tag
-			 }
-			 if err != nil {
-				 return err
-			 }
+			_, err := repo.Repo.TagObject(ref.Hash())
+			if err == plumbing.ErrObjectNotFound {
+				return nil // unannotated tag
+			}
+			if err != nil {
+				return err
+			}
 			targetType = "release"
 			rel, err := repo.NewReleaseFromTag(ref.Name().Short())
 			if err != nil {
-				 return err
+				return err
 			}
 			target = rel.Swhid().Hash
 		} else {

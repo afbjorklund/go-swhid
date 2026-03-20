@@ -1,4 +1,5 @@
 //go:build git
+
 package main
 
 import (
@@ -124,14 +125,14 @@ var gitCmd = &cobra.Command{
 }
 
 func init() {
-        gitRevisionCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
-        gitReleaseCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
-        gitSnapshotCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
+	gitRevisionCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
+	gitReleaseCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
+	gitSnapshotCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
 
 	/*
-	        rootCmd.AddCommand(gitRevisionCmd)
-		rootCmd.AddCommand(gitReleaseCmd)
-		rootCmd.AddCommand(gitSnapshotCmd)
+		        rootCmd.AddCommand(gitRevisionCmd)
+			rootCmd.AddCommand(gitReleaseCmd)
+			rootCmd.AddCommand(gitSnapshotCmd)
 	*/
 
 	gitCmd.AddCommand(gitRevisionCmd)
