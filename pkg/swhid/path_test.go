@@ -25,4 +25,11 @@ func TestDirectoryFromPath(t *testing.T) {
 	assert.Nil(t, err)
 	want := "swh:1:dir:4b825dc642cb6eb9a060e54bf8d69288fbee4904"
 	assert.Equal(t, want, dir.Swhid().String())
+	file := filepath.Join(path, "empty")
+	err = os.WriteFile(file, []byte{}, 0o644)
+	assert.Nil(t, err)
+	dir, err = NewDirectoryFromPath(path)
+	assert.Nil(t, err)
+	want = "swh:1:dir:417c01c8795a35b8e835113a85a5c0c1c77f67fb"
+	assert.Equal(t, want, dir.Swhid().String())
 }
