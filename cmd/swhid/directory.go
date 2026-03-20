@@ -15,7 +15,7 @@ var directoryCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		swhid.DirectoryExcludes = excludes
 		if archive != "" {
-			directory, err := swhid.NewDirectoryFromTar(archive)
+			directory, err := swhid.NewDirectoryFromArchive(archive)
 			if err != nil {
 				fmt.Printf("%s: %v\n", archive, err)
 				return

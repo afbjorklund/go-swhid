@@ -8,12 +8,12 @@ import (
 	"path/filepath"
 )
 
-func newHashFromEntry(typ string) (Hash, error) {
+func newHashFromTarEntry(typ string) (Hash, error) {
 	tree := NewDirectory([]*Entry{}) // TODO: subdirectory
 	return NewHash(NewObject(typ, tree.serialized()).Bytes())
 }
 
-func newHashFromReader(typ string, r io.Reader) (Hash, error) {
+func newHashFromTarReader(typ string, r io.Reader) (Hash, error) {
 	bytes, err := io.ReadAll(r)
 	if err != nil {
 		return nil, err
@@ -21,11 +21,11 @@ func newHashFromReader(typ string, r io.Reader) (Hash, error) {
 	return NewHash(NewObject(typ, bytes).Bytes())
 }
 
-func NewHashFromHeader(header *tar.Header, r io.Reader) (Hash, error) {
+func NewHashFromTarHeader(header *tar.Header, r io.Reader) (Hash, error) {
 	if header.Typeflag == tar.TypeDir {
-		return newHashFromEntry("tree")
+		return newHashFromTarEntry("tree")
 	}
-	return newHashFromReader("blob", r)
+	return newHashFromTarReader("blob", r)
 }
 
 func NewDirectoryFromTar(archive string) (*Directory, error) {
@@ -48,7 +48,7 @@ outer:
 				continue outer
 			}
 		}
-		hash, err := NewHashFromHeader(hdr, t)
+		hash, err := NewHashFromTarHeader(hdr, t)
 		if err != nil {
 			return nil, err
 		}
