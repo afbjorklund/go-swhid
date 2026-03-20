@@ -40,7 +40,33 @@ func TestGitRepository(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestGitHead(t *testing.T) {
+func TestGitTree(t *testing.T) {
+	path, err := gitInit(t.TempDir())
+	assert.Nil(t, err)
+	repo, err := NewRepository(path)
+	assert.Nil(t, err)
+	worktree, err := repo.Repo.Worktree()
+	assert.Nil(t, err)
+	err = os.WriteFile(path+"/file", []byte{}, 0o644)
+	assert.Nil(t, err)
+	blob, err := worktree.Add("file")
+	assert.Nil(t, err)
+	author := object.Signature{Name: "me", Email: "me@example.com"}
+	opts := git.CommitOptions{Author: &author}
+	hash, err := worktree.Commit("message", &opts)
+	assert.Nil(t, err)
+	head, err := repo.Head()
+	assert.Nil(t, err)
+	assert.Equal(t, hash.String(), head)
+	dir, err := repo.NewDirectoryFromHash(hash.String())
+	assert.Nil(t, err)
+	cnt, err := repo.NewContentFromBlob(blob.String())
+	assert.Nil(t, err)
+	assert.Equal(t, "swh:1:dir:df2b8fc99e1c1d4dbc0a854d9f72157f1d6ea078", dir.Swhid().String())
+	assert.Equal(t, "swh:1:cnt:e69de29bb2d1d6434b8b29ae775ad8c2e48c5391", cnt.Swhid().String())
+}
+
+func TestGitCommit(t *testing.T) {
 	path, err := gitInit(t.TempDir())
 	assert.Nil(t, err)
 	repo, err := NewRepository(path)
@@ -56,11 +82,12 @@ func TestGitHead(t *testing.T) {
 	head, err := repo.Head()
 	assert.Nil(t, err)
 	assert.Equal(t, hash.String(), head)
-	rev, err := repo.NewRevisionFromHead()
+	rev, err := repo.NewRevisionFromHash(hash.String())
 	assert.Nil(t, err)
-	rev, err = repo.NewRevisionFromHash(hash.String())
+	dir, err := repo.NewDirectoryFromHash(hash.String())
 	assert.Nil(t, err)
 	assert.Equal(t, "swh:1:rev:85377830ad661d517a1a23006f22907a37aa81be", rev.Swhid().String())
+	assert.Equal(t, "swh:1:dir:4b825dc642cb6eb9a060e54bf8d69288fbee4904", dir.Swhid().String())
 }
 
 func TestGitTag(t *testing.T) {
@@ -83,11 +110,17 @@ func TestGitTag(t *testing.T) {
 	tag, err := repo.Tag("foo")
 	assert.Nil(t, err)
 	assert.Equal(t, ref.Hash().String(), tag)
+	commit, err := repo.Commit("foo")
+	assert.Nil(t, err)
+	assert.Equal(t, hash.String(), commit)
 	rel, err := repo.NewReleaseFromTag("foo")
+	assert.Nil(t, err)
+	rev, err := repo.NewRevisionFromTag("foo")
 	assert.Nil(t, err)
 	rel, err = repo.NewReleaseFromHash(ref.Hash().String())
 	assert.Nil(t, err)
 	assert.Equal(t, "swh:1:rel:79a98c5c621a2c52421cbaf40cbe05d358e041ac", rel.Swhid().String())
+	assert.Equal(t, "swh:1:rev:85377830ad661d517a1a23006f22907a37aa81be", rev.Swhid().String())
 }
 
 func TestGitBranches(t *testing.T) {

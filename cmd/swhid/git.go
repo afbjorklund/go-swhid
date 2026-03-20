@@ -19,27 +19,33 @@ var gitRevisionCmd = &cobra.Command{
 			fmt.Printf("%s: %v\n", args[0], err)
 			return
 		}
-		var revision *swhid.Revision
+		var hash string
 		if len(args) < 2 {
-			/*
-				head, err := repo.Head()
-				if err != nil {
-					return
-				}
-				fmt.Printf("%s\n", head)
-			*/
-			revision, err = repo.NewRevisionFromHead()
+			head, err := repo.Head()
 			if err != nil {
 				return
 			}
+			hash = head
 		} else {
-			revision, err = repo.NewRevisionFromHash(args[1])
-			if err != nil {
-				return
-			}
-
+			hash = args[1]
+		}
+		revision, err := repo.NewRevisionFromHash(hash)
+		if err != nil {
+			return
 		}
 		fmt.Printf("%s\n", revision.Swhid())
+		if writeDirectory {
+			tree, err := repo.Tree(hash)
+			if err != nil {
+				return
+			}
+			directory, err := repo.NewDirectoryFromTree(tree)
+			if err != nil {
+				fmt.Printf("%s: %v\n", hash, err)
+				return
+			}
+			fmt.Printf("%s\n", directory.Swhid())
+		}
 	},
 }
 
@@ -53,19 +59,32 @@ var gitReleaseCmd = &cobra.Command{
 			fmt.Printf("%s: %v\n", args[0], err)
 			return
 		}
-		/*
-			tag, err := repo.Tag(args[1])
-			if err != nil {
-				fmt.Printf("%s: %v\n", args[1], err)
-				return
-			}
-			fmt.Printf("%s\n", tag)
-		*/
 		release, err := repo.NewReleaseFromTag(args[1])
 		if err != nil {
 			return
 		}
 		fmt.Printf("%s\n", release.Swhid())
+		if writeRevision {
+			tag := args[1]
+			revision, err := repo.NewRevisionFromTag(tag)
+			if err != nil {
+				fmt.Printf("%s: %v\n", tag, err)
+				return
+			}
+			fmt.Printf("%s\n", revision.Swhid())
+			hash, err := repo.Commit(tag)
+			if err != nil {
+				return
+			}
+			if writeDirectory {
+				directory, err := repo.NewDirectoryFromHash(hash)
+				if err != nil {
+					fmt.Printf("%s: %v\n", args[1], err)
+					return
+				}
+				fmt.Printf("%s\n", directory.Swhid())
+			}
+		}
 	},
 }
 
@@ -124,8 +143,14 @@ var gitCmd = &cobra.Command{
 	Short: "Git repository SWHID computation (requires -tags git)",
 }
 
+var writeDirectory bool
+var writeRevision bool
+
 func init() {
+	gitRevisionCmd.Flags().BoolVar(&writeDirectory, "directory", false, "Write directory")
 	gitRevisionCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
+	gitReleaseCmd.Flags().BoolVar(&writeDirectory, "directory", false, "Write directory")
+	gitReleaseCmd.Flags().BoolVar(&writeRevision, "revision", false, "Write revision")
 	gitReleaseCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
 	gitSnapshotCmd.Flags().BoolVarP(&swhid.WriteObjects, "write", "w", false, "Write objects")
 

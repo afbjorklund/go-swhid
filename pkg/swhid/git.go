@@ -3,6 +3,8 @@
 package swhid
 
 import (
+	"io"
+	"io/fs"
 	"strings"
 
 	"gopkg.in/src-d/go-git.v4"
@@ -33,6 +35,54 @@ func NewHashesFromHashes(hashes []plumbing.Hash) []Hash {
 	return result
 }
 
+func (repo *Repository) NewContentFromBlob(hash string) (*Content, error) {
+	blob, err := repo.Repo.BlobObject(plumbing.NewHash(hash))
+	if err != nil {
+		return nil, err
+	}
+	reader, err := blob.Reader()
+	if err != nil {
+		return nil, err
+	}
+	bytes, err := io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	return NewContent(bytes), nil
+}
+
+func (repo *Repository) NewDirectoryFromTree(hash string) (*Directory, error) {
+	tree, err := repo.Repo.TreeObject(plumbing.NewHash(hash))
+	if err != nil {
+		return nil, err
+	}
+	entries := []*Entry{}
+	for _, entry := range tree.Entries {
+		if entry.Mode.IsFile() {
+			content, err := repo.NewContentFromBlob(entry.Hash.String())
+			if err != nil {
+				return nil, err
+			}
+			entries = append(entries, &Entry{
+				name:   entry.Name,
+				mode:   fs.FileMode(entry.Mode),
+				target: []byte(content.Swhid().Hash),
+			})
+		} else {
+			directory, err := repo.NewContentFromBlob(entry.Hash.String())
+			if err != nil {
+				return nil, err
+			}
+			entries = append(entries, &Entry{
+				name:   entry.Name,
+				mode:   fs.FileMode(entry.Mode),
+				target: []byte(directory.Swhid().Hash),
+			})
+		}
+	}
+	return NewDirectory(entries), nil
+}
+
 func (repo *Repository) Head() (string, error) {
 	head, err := repo.Repo.Head()
 	if err != nil {
@@ -41,12 +91,44 @@ func (repo *Repository) Head() (string, error) {
 	return head.Strings()[1], nil
 }
 
-func (repo *Repository) NewRevisionFromHead() (*Revision, error) {
-	ref, err := repo.Repo.Head()
+func (repo *Repository) Commit(name string) (string, error) {
+	ref, err := repo.Repo.Tag(name)
+	if err != nil {
+		return "", err
+	}
+	tag, err := repo.Repo.TagObject(ref.Hash())
+	if err != nil {
+		return "", err
+	}
+	return tag.Target.String(), nil
+}
+
+func (repo *Repository) Tree(hash string) (string, error) {
+	commit, err := repo.Repo.CommitObject(plumbing.NewHash(hash))
+	if err != nil {
+		return "", err
+	}
+	return commit.TreeHash.String(), nil
+}
+
+func (repo *Repository) NewDirectoryFromHash(hash string) (*Directory, error) {
+	tree, err := repo.Tree(hash)
 	if err != nil {
 		return nil, err
 	}
-	return repo.newRevisionFromObject(ref.Hash())
+	return repo.NewDirectoryFromTree(tree)
+}
+
+func (repo *Repository) NewRevisionFromTag(name string) (*Revision, error) {
+	ref, err := repo.Repo.Tag(name)
+	if err != nil {
+		return nil, err
+	}
+	tag, err := repo.Repo.TagObject(ref.Hash())
+	if err != nil {
+		return nil, err
+	}
+	return repo.NewRevisionFromHash(tag.Target.String())
 }
 
 func (repo *Repository) NewRevisionFromHash(hash string) (*Revision, error) {
