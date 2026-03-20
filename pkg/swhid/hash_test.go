@@ -27,6 +27,7 @@ func TestHash256(t *testing.T) {
 	old := HashName
 	err := SetHash("sha256")
 	assert.Nil(t, err)
+	assert.Equal(t, 64, HashLength)
 	// SHA-2
 	hash, err := NewHash([]byte{})
 	assert.Nil(t, err)
@@ -63,47 +64,71 @@ func TestHashDecode256(t *testing.T) {
 }
 
 func TestHashB32(t *testing.T) {
-	old := HashEncoding
+	old := HashName
+	oldenc := HashEncoding
 	err := SetEncoding("base32hex")
 	assert.Nil(t, err)
 	assert.Equal(t, 32, HashLength)
 	// SHA-1
+	err = SetHash("sha1")
+	assert.Nil(t, err)
 	hash, err := NewHash([]byte{})
 	assert.Nil(t, err)
 	assert.Equal(t, "R8SQ7RIUDD5GQCILNVNPAO0OI2NTG1O9", hash.String())
-	// gitoid
-	hash, err = NewHash([]byte("blob 0\000"))
-	assert.Nil(t, err)
-	assert.Equal(t, "SQEU56TIQ7B46ISB56N7EMMOOBI8OKSH", hash.String())
 	// decode
 	hash, err = NewHashFromString("R8SQ7RIUDD5GQCILNVNPAO0OI2NTG1O9")
 	assert.Nil(t, err)
 	h, err := NewHash([]byte{})
 	assert.Nil(t, err)
 	assert.Equal(t, h, hash)
-	_ = SetEncoding(old)
+	// SHA-2
+	err = SetHash("sha256")
+	assert.Nil(t, err)
+	hash, err = NewHash([]byte{})
+	assert.Nil(t, err)
+	assert.Equal(t, "SEOC8GKOVGE196NRUJ49IRTP4GJQSGF4CIDP6J54IMCHMU2IN1AG", hash.String())
+	// decode
+	hash, err = NewHashFromString("SEOC8GKOVGE196NRUJ49IRTP4GJQSGF4CIDP6J54IMCHMU2IN1AG")
+	assert.Nil(t, err)
+	h, err = NewHash([]byte{})
+	assert.Nil(t, err)
+	assert.Equal(t, h, hash)
+	_ = SetHash(old)
+	_ = SetEncoding(oldenc)
 }
 
 func TestHashB64(t *testing.T) {
-	old := HashEncoding
+	old := HashName
+	oldenc := HashEncoding
 	err := SetEncoding("base64url")
 	assert.Nil(t, err)
 	assert.Equal(t, 26, HashLength)
 	// SHA-1
+	err = SetHash("sha1")
+	assert.Nil(t, err)
 	hash, err := NewHash([]byte{})
 	assert.Nil(t, err)
 	assert.Equal(t, "2jmj7l5rSw0yVb_vlWAYkK_YBwk", hash.String())
-	// gitoid
-	hash, err = NewHash([]byte("blob 0\000"))
-	assert.Nil(t, err)
-	assert.Equal(t, "5p3im7LR1kNLiymud1rYwuSMU5E", hash.String())
 	// decode
 	hash, err = NewHashFromString("2jmj7l5rSw0yVb_vlWAYkK_YBwk")
 	assert.Nil(t, err)
 	h, err := NewHash([]byte{})
 	assert.Nil(t, err)
 	assert.Equal(t, h, hash)
-	_ = SetEncoding(old)
+	// SHA-2
+	err = SetHash("sha256")
+	assert.Nil(t, err)
+	hash, err = NewHash([]byte{})
+	assert.Nil(t, err)
+	assert.Equal(t, "47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU", hash.String())
+	// decode
+	hash, err = NewHashFromString("47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU")
+	assert.Nil(t, err)
+	h, err = NewHash([]byte{})
+	assert.Nil(t, err)
+	assert.Equal(t, h, hash)
+	_ = SetHash(old)
+	_ = SetEncoding(oldenc)
 }
 
 func TestHashCollision(t *testing.T) {
