@@ -3,6 +3,8 @@ package swhid
 import (
 	"bytes"
 	"fmt"
+	"os"
+	"path/filepath"
 )
 
 type Release struct {
@@ -41,5 +43,10 @@ func (rel *Release) serialized() []byte {
 
 func (rel *Release) Swhid() *Swhid {
 	bytes := rel.serialized()
-	return NewSwhidFromObject(RELEASE, NewObject("tag", bytes))
+	swhid := NewSwhidFromObject(RELEASE, NewObject("tag", bytes))
+	if WriteObjects && rel.Tag != "" && rel.ObjectType == "commit" {
+		_ = os.MkdirAll(filepath.Join(".", ".swh", "refs", "tags"), 0o755)
+		_ = os.WriteFile(filepath.Join(".", ".swh", "refs", "tags", rel.Tag), []byte(swhid.Hash.String()), 0o644)
+	}
+	return swhid
 }
