@@ -30,14 +30,15 @@ CC = cc
 
 CFLAGS = -O2 -g -fPIC -shared
 
-sha1.so: sha1.o
+sha1.so: ext/misc/sha1.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
 
 compress.so: LDFLAGS = -lz
 
-compress.so: compress.o
+compress.so: ext/misc/compress.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
 
 .PHONY: clean
 clean:
-	$(RM) *.o swhid sha1.so compress.so
+	$(RM) ext/misc/*.o
+	$(RM) swhid sha1.so compress.so
