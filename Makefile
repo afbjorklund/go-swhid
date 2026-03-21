@@ -29,7 +29,15 @@ cover:
 CC = cc
 
 CFLAGS = -O2 -g -fPIC -shared
-LDFLAGS = -lz
+
+sha1.so: sha1.o
+	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
+
+compress.so: LDFLAGS = -lz
 
 compress.so: compress.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
+
+.PHONY: clean
+clean:
+	$(RM) *.o swhid sha1.so compress.so
