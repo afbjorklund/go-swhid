@@ -25,6 +25,12 @@ compressed with zlib and indexed by two characters:
 
 It can be used as a bare git repository, `$GIT_DIR`.
 
+To list all objects in the directory:
+
+```sh
+file -z .swh/objects/*/*
+```
+
 ### .swh database
 
 The .swh database file contains all the SWH objects:
@@ -38,3 +44,9 @@ It uses zlib compression, with a leading varint length.
 
 The "type" and "length" are redundant, the same values
 are included in the "data" (including the length prefix).
+
+To list all objects in the database:
+
+```sql
+SELECT hex(oid), type, length FROM objects ORDER BY oid;
+```
