@@ -27,13 +27,21 @@ func NewDatabase(path string) (*Database, error) {
 		if err != nil {
 			return nil, err
 		}
-		// sqlite> .load ./compress
-		sql.Register("sqlite3_with_compress",
-			&sqlite3.SQLiteDriver{
-				Extensions: []string{
-					abscompress,
-				},
-			})
+		loaded := false
+		for _, driver := range sql.Drivers() {
+			if driver == "sqlite3_with_compress" {
+				loaded = true
+			}
+		}
+		if !loaded {
+			// sqlite> .load ./compress
+			sql.Register("sqlite3_with_compress",
+				&sqlite3.SQLiteDriver{
+					Extensions: []string{
+						abscompress,
+					},
+				})
+		}
 		db, err = sql.Open("sqlite3_with_compress", path)
 		if err != nil {
 			return nil, err
