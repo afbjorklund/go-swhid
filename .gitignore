@@ -1,2 +1,4 @@
 /swhid
+*.o
+*.so
 coverage.*

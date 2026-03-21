@@ -5,8 +5,9 @@ package swhid
 import (
 	"context"
 	"database/sql"
+	"path/filepath"
 
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/mattn/go-sqlite3"
 )
 
 const HaveDatabase = true
@@ -16,7 +17,18 @@ type Database struct {
 }
 
 func NewDatabase(path string) (*Database, error) {
-	db, err := sql.Open("sqlite3", path)
+	abscompress, err := filepath.Abs("compress")
+	if err != nil {
+		return nil, err
+	}
+	// sqlite> .load ./compress
+	sql.Register("sqlite3_with_compress",
+		&sqlite3.SQLiteDriver{
+			Extensions: []string{
+				abscompress,
+			},
+		})
+	db, err := sql.Open("sqlite3_with_compress", path)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +37,7 @@ func NewDatabase(path string) (*Database, error) {
 		return nil, err
 	}
 	_, err = db.ExecContext(ctx,
-		"CREATE TABLE IF NOT EXISTS objects (oid BLOB PRIMARY KEY, type TEXT, length INT, data BLOB)")
+		"CREATE TABLE IF NOT EXISTS objects (oid BLOB PRIMARY KEY, type TEXT, length INT, data BLOB /*compressed*/)")
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +46,7 @@ func NewDatabase(path string) (*Database, error) {
 
 func (db *Database) WriteObject(ctx context.Context, oid []byte, typ string, data []byte) error {
 	_, err := db.DB.ExecContext(ctx,
-		"INSERT OR IGNORE INTO objects (oid, type, length, data) VALUES ($1, $2, $3, $4)",
+		"INSERT OR IGNORE INTO objects (oid, type, length, data) VALUES ($1, $2, $3, compress($4))",
 		oid,
 		typ,
 		len(data),

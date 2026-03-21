@@ -25,3 +25,11 @@ cover:
 	$(GO) test -tags "$(GOTAGS)" -coverprofile=coverage.out ./pkg/...
 	$(GO) tool cover -html=coverage.out -o coverage.html
 	$(GO) tool cover -func=coverage.out | grep -v 100.0
+
+CC = cc
+
+CFLAGS = -O2 -g -fPIC -shared
+LDFLAGS = -lz
+
+compress.so: compress.o
+	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
