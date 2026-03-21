@@ -3,6 +3,7 @@ module github.com/afbjorklund/go-swhid
 go 1.25
 
 require (
+	github.com/mattn/go-sqlite3 v1.14.33
 	github.com/pjbgf/sha1cd v0.5.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1

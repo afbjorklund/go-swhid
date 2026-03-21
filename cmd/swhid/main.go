@@ -41,6 +41,9 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&version, "version", "1", "SWH version")
 	rootCmd.PersistentFlags().StringVar(&hashName, "hash", "sha1cd", "Hash name")
 	rootCmd.PersistentFlags().StringVar(&hashEncoding, "encoding", "hex", "Hash encoding")
+	if swhid.HaveDatabase {
+		rootCmd.PersistentFlags().BoolVar(&swhid.WriteDatabase, "database", false, "Write objects to database")
+	}
 }
 
 func main() {

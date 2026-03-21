@@ -2,6 +2,7 @@
 GO = go
 
 GOTAGS = git
+#GOTAGS = git sql
 
 .PHONY: build
 build:

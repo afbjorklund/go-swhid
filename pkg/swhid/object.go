@@ -3,6 +3,7 @@ package swhid
 import (
 	"bytes"
 	"compress/zlib"
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -27,6 +28,7 @@ func (o *Object) Bytes() []byte {
 }
 
 var WriteObjects bool
+var WriteDatabase bool
 
 func NewObject(typ string, data []byte) *Object {
 	object := Object{Type: typ, Data: data}
@@ -58,6 +60,25 @@ func NewObject(typ string, data []byte) *Object {
 			return nil
 		}
 		_ = z.Close()
+	}
+	if WriteObjects && WriteDatabase {
+		hash, err := NewHash(object.Bytes())
+		if err != nil {
+			// TODO: return error
+			return nil
+		}
+		dbpath := filepath.Join(".", "swh.db")
+		db, err := NewDatabase(dbpath)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return nil
+		}
+		ctx := context.TODO()
+		err = db.WriteObject(ctx, hash, typ, data)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return nil
+		}
 	}
 	return &object
 }
