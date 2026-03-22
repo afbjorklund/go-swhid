@@ -63,9 +63,13 @@ func (repo *Repository) NewDirectoryFromTree(hash string) (*Directory, error) {
 			if err != nil {
 				return nil, err
 			}
+			mode, err := entry.Mode.ToOSFileMode()
+			if err != nil {
+				return nil, err
+			}
 			entries = append(entries, &Entry{
 				name:   entry.Name,
-				mode:   fs.FileMode(entry.Mode),
+				mode:   fs.FileMode(mode),
 				target: []byte(content.Swhid().Hash),
 			})
 		} else {
@@ -73,9 +77,13 @@ func (repo *Repository) NewDirectoryFromTree(hash string) (*Directory, error) {
 			if err != nil {
 				return nil, err
 			}
+			mode, err := entry.Mode.ToOSFileMode()
+			if err != nil {
+				return nil, err
+			}
 			entries = append(entries, &Entry{
 				name:   entry.Name,
-				mode:   fs.FileMode(entry.Mode),
+				mode:   mode,
 				target: []byte(directory.Swhid().Hash),
 			})
 		}
