@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDirectoryFromZip(t *testing.T) {
-	path := t.TempDir()
-	file := filepath.Join(path, "test.zip")
+func createTestZip(file string) error {
 	zf, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE, 0o644)
-	assert.Nil(t, err)
+	if err != nil {
+		return err
+	}
 	zw := zip.NewWriter(zf)
 	hdr := &zip.FileHeader{
 		Name:               "empty",
@@ -21,12 +21,24 @@ func TestDirectoryFromZip(t *testing.T) {
 	}
 	hdr.SetMode(0o644)
 	w, err := zw.CreateHeader(hdr)
-	assert.Nil(t, err)
+	if err != nil {
+		return err
+	}
 	_, err = w.Write([]byte{})
-	assert.Nil(t, err)
+	if err != nil {
+		return err
+	}
 	err = zw.Close()
-	assert.Nil(t, err)
-	err = zf.Close()
+	if err != nil {
+		return err
+	}
+	return zf.Close()
+}
+
+func TestDirectoryFromZip(t *testing.T) {
+	path := t.TempDir()
+	file := filepath.Join(path, "test.zip")
+	err := createTestZip(file)
 	assert.Nil(t, err)
 	dir, err := NewDirectoryFromZip(file)
 	assert.Nil(t, err)

@@ -9,11 +9,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDirectoryFromTar(t *testing.T) {
-	path := t.TempDir()
-	file := filepath.Join(path, "test.tar")
+func createTestTar(file string) error {
 	tf, err := os.OpenFile(file, os.O_WRONLY|os.O_CREATE, 0o644)
-	assert.Nil(t, err)
+	if err != nil {
+		return err
+	}
 	tw := tar.NewWriter(tf)
 	hdr := &tar.Header{
 		Name: "empty",
@@ -21,10 +21,20 @@ func TestDirectoryFromTar(t *testing.T) {
 		Size: 0,
 	}
 	err = tw.WriteHeader(hdr)
-	assert.Nil(t, err)
+	if err != nil {
+		return err
+	}
 	_, err = tw.Write([]byte{})
-	assert.Nil(t, err)
-	err = tf.Close()
+	if err != nil {
+		return err
+	}
+	return tf.Close()
+}
+
+func TestDirectoryFromTar(t *testing.T) {
+	path := t.TempDir()
+	file := filepath.Join(path, "test.tar")
+	err := createTestTar(file)
 	assert.Nil(t, err)
 	dir, err := NewDirectoryFromTar(file)
 	assert.Nil(t, err)
