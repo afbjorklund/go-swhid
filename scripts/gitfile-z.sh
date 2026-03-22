@@ -1,2 +1,2 @@
 #!/bin/sh
-file -z $@
+file -z "$@"
