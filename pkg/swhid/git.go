@@ -73,7 +73,7 @@ func (repo *Repository) NewDirectoryFromTree(hash string) (*Directory, error) {
 				target: []byte(content.Swhid().Hash),
 			})
 		} else {
-			directory, err := repo.NewContentFromBlob(entry.Hash.String())
+			directory, err := repo.NewDirectoryFromTree(entry.Hash.String())
 			if err != nil {
 				return nil, err
 			}
