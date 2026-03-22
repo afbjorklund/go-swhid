@@ -42,8 +42,8 @@ CREATE TABLE objects (oid BLOB PRIMARY KEY, type TEXT, length INT, data BLOB /*c
 The data is compressed with the `compress()` function.
 It uses zlib compression, with a leading varint length.
 
-The "type" and "length" are redundant, the same values
-are included in the "data" (including the length prefix).
+The "type" and "length" are needed, with the uncompressed
+"data", when calculating the checksum that is the "oid".
 
 To list all objects in the database:
 
