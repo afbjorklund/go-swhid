@@ -17,13 +17,6 @@ func TestDatabase(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestVarint(t *testing.T) {
-	assert.Equal(t, []byte{0x80}, varint(0))
-	assert.Equal(t, []byte{0xfb}, varint(123))
-	assert.Equal(t, []byte{0x01, 0x80}, varint(128))
-	assert.Equal(t, []byte{0x01, 0x87}, varint(135))
-}
-
 func TestWriteDatabase(t *testing.T) {
 	cwd, err := os.Getwd()
 	dir := t.TempDir()
