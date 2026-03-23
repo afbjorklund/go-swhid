@@ -2,3 +2,5 @@
 *.o
 *.so
 coverage.*
+.swh
+swh.db
