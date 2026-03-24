@@ -4,7 +4,6 @@ package swhid
 
 import (
 	"io"
-	"io/fs"
 	"strings"
 
 	"gopkg.in/src-d/go-git.v4"
@@ -69,7 +68,7 @@ func (repo *Repository) NewDirectoryFromTree(hash string) (*Directory, error) {
 			}
 			entries = append(entries, &Entry{
 				name:   entry.Name,
-				mode:   fs.FileMode(mode),
+				mode:   FileMode(mode),
 				target: []byte(content.Swhid().Hash),
 			})
 		} else {

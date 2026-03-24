@@ -3,7 +3,6 @@ package swhid
 import (
 	"archive/zip"
 	"io"
-	"io/fs"
 	"os"
 	"path/filepath"
 )
@@ -16,7 +15,7 @@ func newHashFromZipReader(typ string, r io.Reader) (Hash, error) {
 	return NewHash(NewObject(typ, bytes).Bytes())
 }
 
-func NewHashFromZipFile(file *zip.File, f fs.File) (Hash, error) {
+func NewHashFromZipFile(file *zip.File, f io.ReadCloser) (Hash, error) {
 	return newHashFromZipReader("blob", f)
 }
 
@@ -53,7 +52,7 @@ outer:
 		}
 		entry := Entry{
 			name:   name,
-			mode:   file.Mode(),
+			mode:   FileMode(file.Mode()),
 			target: hash,
 		}
 		entries = append(entries, &entry)

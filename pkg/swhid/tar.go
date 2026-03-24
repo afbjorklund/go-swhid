@@ -3,7 +3,6 @@ package swhid
 import (
 	"archive/tar"
 	"io"
-	"io/fs"
 	"os"
 	"path/filepath"
 )
@@ -54,7 +53,7 @@ outer:
 		}
 		entry := Entry{
 			name:   name,
-			mode:   fs.FileMode(hdr.Mode),
+			mode:   FileMode(hdr.Mode),
 			target: hash,
 		}
 		entries = append(entries, &entry)

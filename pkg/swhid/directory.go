@@ -2,7 +2,6 @@ package swhid
 
 import (
 	"bytes"
-	"io/fs"
 	"sort"
 )
 
@@ -12,7 +11,7 @@ type Directory struct {
 
 type Entry struct {
 	name   string
-	mode   fs.FileMode
+	mode   FileMode
 	target []byte
 }
 

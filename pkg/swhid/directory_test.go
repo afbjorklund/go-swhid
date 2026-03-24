@@ -1,7 +1,6 @@
 package swhid
 
 import (
-	"io/fs"
 	"sort"
 	"testing"
 
@@ -15,11 +14,11 @@ func TestDirectory(t *testing.T) {
 }
 
 func TestPermissions(t *testing.T) {
-	assert.Equal(t, "040000", permissions(fs.ModeDir))
-	assert.Equal(t, "120000", permissions(fs.ModeSymlink))
+	assert.Equal(t, "040000", permissions(ModeDir))
+	assert.Equal(t, "120000", permissions(ModeSymlink))
 	assert.Equal(t, "100755", permissions(0o755))
 	assert.Equal(t, "100644", permissions(0o644))
-	assert.Equal(t, "", permissions(fs.ModeDevice))
+	assert.Equal(t, "", permissions(ModeDevice))
 }
 
 func TestDirectoryFromDir(t *testing.T) {
@@ -45,7 +44,7 @@ func TestDirectorySorting(t *testing.T) {
 
 func TestDirectorySymlinkEntry(t *testing.T) {
 	entries := []*Entry{}
-	entries = append(entries, &Entry{name: "link", mode: fs.ModeSymlink, target: []byte("94a9ed024d3859793618152ea559a168bbcbb5e2")})
+	entries = append(entries, &Entry{name: "link", mode: ModeSymlink, target: []byte("94a9ed024d3859793618152ea559a168bbcbb5e2")})
 	directory := NewDirectory(entries)
 	want := "swh:1:dir:8b557137075120f7e08ca8c94346b1980dccf3ac"
 	assert.Equal(t, want, directory.Swhid().String())
@@ -53,7 +52,7 @@ func TestDirectorySymlinkEntry(t *testing.T) {
 
 func TestDirectoryNestedDirectory(t *testing.T) {
 	entries := []*Entry{}
-	entries = append(entries, &Entry{name: "subdir", mode: fs.ModeDir, target: []byte("4b825dc642cb6eb9a060e54bf8d69288fbee4904")})
+	entries = append(entries, &Entry{name: "subdir", mode: ModeDir, target: []byte("4b825dc642cb6eb9a060e54bf8d69288fbee4904")})
 	directory := NewDirectory(entries)
 	want := "swh:1:dir:8c772a0749716ed66ace4a2aefadc94ec3bb8839"
 	assert.Equal(t, want, directory.Swhid().String())
