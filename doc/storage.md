@@ -36,17 +36,17 @@ file -z .swh/objects/*/*
 The .swh database file contains all the SWH objects:
 
 ```sql
-CREATE TABLE objects (oid BLOB PRIMARY KEY, type TEXT, length INT, data BLOB /*compressed*/);
+CREATE TABLE objects (oid BLOB PRIMARY KEY, type TEXT, size INT, data BLOB /*compressed*/);
 ```
 
 The data is compressed with the `compress()` function.
-It uses zlib compression, with a leading varint length.
+It uses zlib compression, with a leading varint size.
 
-The "type" and "length" are needed, with the uncompressed
+The "type" and "size" are needed, with the uncompressed
 "data", when calculating the checksum that is the "oid".
 
 To list all objects in the database:
 
 ```sql
-SELECT hex(oid), type, length FROM objects ORDER BY oid;
+SELECT hex(oid), type, size FROM objects ORDER BY oid;
 ```

@@ -16,8 +16,8 @@ type Object struct {
 
 // []string{"blob", "tree", "commit", "tag", "snapshot"}
 
-func header(typ string, length int64) []byte {
-	return []byte(fmt.Sprintf("%s %d\000", typ, length))
+func header(typ string, size int64) []byte {
+	return []byte(fmt.Sprintf("%s %d\000", typ, size))
 }
 
 func (o *Object) Bytes() []byte {

@@ -1,1 +1,1 @@
-select lower(hex(oid)), type, length from objects order by oid;
+select lower(hex(oid)), type, size from objects order by oid;

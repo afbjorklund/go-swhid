@@ -33,16 +33,16 @@ func TestWriteDatabase(t *testing.T) {
 	hash, err := NewHash(object.Bytes())
 	assert.Nil(t, err)
 	rows, err := db.DB.QueryContext(t.Context(),
-                "SELECT type, length FROM objects WHERE oid = $1",
+                "SELECT type, size FROM objects WHERE oid = $1",
 		hash)
 	assert.Nil(t, err)
 	assert.True(t, rows.Next())
 	var typ string
-	var length int = -1
-	err = rows.Scan(&typ, &length)
+	var size int = -1
+	err = rows.Scan(&typ, &size)
 	assert.Nil(t, err)
 	assert.Equal(t, "blob", typ)
-	assert.Equal(t, 0, length)
+	assert.Equal(t, 0, size)
 	err = os.Chdir(cwd)
 	assert.Nil(t, err)
 }

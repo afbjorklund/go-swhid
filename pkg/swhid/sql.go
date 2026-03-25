@@ -58,7 +58,7 @@ func NewDatabase(path string) (*Database, error) {
 		return nil, err
 	}
 	_, err = db.ExecContext(ctx,
-		"CREATE TABLE IF NOT EXISTS objects (oid BLOB PRIMARY KEY, type TEXT, length INT, data BLOB /*compressed*/)")
+		"CREATE TABLE IF NOT EXISTS objects (oid BLOB PRIMARY KEY, type TEXT, size INT, data BLOB /*compressed*/)")
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func compress(data []byte) []byte {
 
 func (db *Database) WriteObject(ctx context.Context, oid []byte, typ string, data []byte) error {
 	_, err := db.DB.ExecContext(ctx,
-		"INSERT OR IGNORE INTO objects (oid, type, length, data) VALUES ($1, $2, $3, $4)",
+		"INSERT OR IGNORE INTO objects (oid, type, size, data) VALUES ($1, $2, $3, $4)",
 		oid,
 		typ,
 		len(data),
