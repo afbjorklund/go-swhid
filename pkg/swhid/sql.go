@@ -62,6 +62,11 @@ func NewDatabase(path string) (*Database, error) {
 	if err != nil {
 		return nil, err
 	}
+	_, err = db.ExecContext(ctx,
+		"CREATE TABLE IF NOT EXISTS refs (name TEXT PRIMARY KEY NOT NULL, oid CHARACTER(20), symbolic TEXT, CHECK ((oid IS NOT NULL) != (symbolic IS NOT NULL)))")
+	if err != nil {
+		return nil, err
+	}
 	return &Database{DB: db}, nil
 }
 
@@ -81,5 +86,14 @@ func (db *Database) WriteObject(ctx context.Context, oid []byte, typ string, dat
 		typ,
 		len(data),
 		compress(data))
+	return err
+}
+
+func (db *Database) WriteRef(ctx context.Context, name string, oid []byte, symbolic *string) error {
+	_, err := db.DB.ExecContext(ctx,
+		"INSERT OR IGNORE INTO refs (name, oid, symbolic) VALUES ($1, $2, $3)",
+		name,
+		oid,
+		symbolic)
 	return err
 }

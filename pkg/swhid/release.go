@@ -2,6 +2,7 @@ package swhid
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -47,6 +48,20 @@ func (rel *Release) Swhid() *Swhid {
 	if WriteObjects && rel.Tag != "" && rel.ObjectType == "commit" {
 		_ = os.MkdirAll(filepath.Join(".", ".swh", "refs", "tags"), 0o755)
 		_ = os.WriteFile(filepath.Join(".", ".swh", "refs", "tags", rel.Tag), []byte(swhid.Hash.String()), 0o644)
+	}
+	if WriteObjects && rel.Tag != "" && rel.ObjectType == "commit" && WriteDatabase {
+		dbpath := filepath.Join(".", "swh.db")
+		db, err := NewDatabase(dbpath)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return nil
+		}
+		ctx := context.TODO()
+		err = db.WriteRef(ctx, rel.Tag, swhid.Hash, nil)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return nil
+		}
 	}
 	return swhid
 }

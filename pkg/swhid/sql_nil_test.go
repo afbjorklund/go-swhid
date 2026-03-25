@@ -18,4 +18,6 @@ func TestWriteDatabase(t *testing.T) {
 	hash := Hash{}
 	err := db.WriteObject(t.Context(), hash, "blob", []byte{})
 	assert.Error(t, err)
+	err = db.WriteRef(t.Context(), "HEAD", hash, nil)
+	assert.Error(t, err)
 }

@@ -19,3 +19,7 @@ func NewDatabase(_ string) (*Database, error) {
 func (db *Database) WriteObject(_ context.Context, _ []byte, _ string, _ []byte) error {
 	return fmt.Errorf("no sql support")
 }
+
+func (db *Database) WriteRef(_ context.Context, _ string, _ []byte, _ *string) error {
+	return fmt.Errorf("no sql support")
+}

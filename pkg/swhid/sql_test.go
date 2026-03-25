@@ -13,7 +13,15 @@ import (
 // "file:foobar?mode=memory&cache=shared")
 
 func TestDatabase(t *testing.T) {
-	_, err := NewDatabase("file:test?mode=memory&cache=shared")
+	db, err := NewDatabase("file:test?mode=memory&cache=shared")
+	assert.Nil(t, err)
+	hash := Hash{}
+	err = db.WriteObject(t.Context(), hash, "blob", []byte{})
+	assert.Nil(t, err)
+	err = db.WriteRef(t.Context(), "HEAD", hash, nil)
+	assert.Nil(t, err)
+	ref := "refs/heads/master"
+	err = db.WriteRef(t.Context(), "HEAD", nil, &ref)
 	assert.Nil(t, err)
 }
 
