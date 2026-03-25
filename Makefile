@@ -30,6 +30,9 @@ CC = cc
 
 CFLAGS = -O2 -g -fPIC -shared
 
+git.so: ext/git/git.o
+	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
+
 sha1.so: ext/misc/sha1.o
 	$(CC) -o $@ $(CFLAGS) $^ $(LDFLAGS)
 

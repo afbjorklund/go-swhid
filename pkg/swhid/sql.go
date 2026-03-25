@@ -58,7 +58,7 @@ func NewDatabase(path string) (*Database, error) {
 		return nil, err
 	}
 	_, err = db.ExecContext(ctx,
-		"CREATE TABLE IF NOT EXISTS objects (oid BLOB PRIMARY KEY, type TEXT, size INT, data BLOB /*compressed*/)")
+		"CREATE TABLE IF NOT EXISTS objects (oid CHARACTER(20) PRIMARY KEY NOT NULL, type INTEGER NOT NULL, size INTEGER NOT NULL, data BLOB /*compressed*/)")
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (db *Database) WriteObject(ctx context.Context, oid []byte, typ string, dat
 	_, err := db.DB.ExecContext(ctx,
 		"INSERT OR IGNORE INTO objects (oid, type, size, data) VALUES ($1, $2, $3, $4)",
 		oid,
-		typ,
+		gittype[typ],
 		len(data),
 		compress(data))
 	return err

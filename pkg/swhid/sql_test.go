@@ -37,11 +37,11 @@ func TestWriteDatabase(t *testing.T) {
 		hash)
 	assert.Nil(t, err)
 	assert.True(t, rows.Next())
-	var typ string
+	var typ int
 	var size int = -1
 	err = rows.Scan(&typ, &size)
 	assert.Nil(t, err)
-	assert.Equal(t, "blob", typ)
+	assert.Equal(t, gittype["blob"], typ)
 	assert.Equal(t, 0, size)
 	err = os.Chdir(cwd)
 	assert.Nil(t, err)
