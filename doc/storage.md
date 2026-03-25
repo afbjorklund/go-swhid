@@ -37,6 +37,7 @@ The .swh database file contains all the SWH objects:
 
 ```sql
 CREATE TABLE objects (oid CHAR(20) PRIMARY KEY, type TEXT, size INT, data BLOB /*compressed*/);
+CREATE TABLE refs (name TEXT PRIMARY KEY, oid CHAR(20), symbolic TEXT); -- either: oid|symbolic
 ```
 
 The data is compressed with the `compress()` function.
