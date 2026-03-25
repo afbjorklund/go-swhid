@@ -17,11 +17,11 @@ type Object struct {
 // []string{"blob", "tree", "commit", "tag", "snapshot"}
 
 var gittype = map[string]int{
-	"none": 0,     // OBJ_NONE
-	"commit": 1,   // OBJ_COMMIT
-	"tree": 2,     // OBJ_TREE
-	"blob": 3,     // OBJ_BLOB
-	"tag": 4,      // OBJ_TAG
+	"none":     0, // OBJ_NONE
+	"commit":   1, // OBJ_COMMIT
+	"tree":     2, // OBJ_TREE
+	"blob":     3, // OBJ_BLOB
+	"tag":      4, // OBJ_TAG
 	"snapshot": 5, // "reserved for future expansion"
 }
 

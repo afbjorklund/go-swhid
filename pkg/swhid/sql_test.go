@@ -41,7 +41,7 @@ func TestWriteDatabase(t *testing.T) {
 	hash, err := NewHash(object.Bytes())
 	assert.Nil(t, err)
 	rows, err := db.DB.QueryContext(t.Context(),
-                "SELECT type, size FROM objects WHERE oid = $1",
+		"SELECT type, size FROM objects WHERE oid = $1",
 		hash)
 	assert.Nil(t, err)
 	assert.True(t, rows.Next())
