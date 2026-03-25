@@ -36,7 +36,7 @@ file -z .swh/objects/*/*
 The .swh database file contains all the SWH objects:
 
 ```sql
-CREATE TABLE objects (oid BLOB PRIMARY KEY, type TEXT, size INT, data BLOB /*compressed*/);
+CREATE TABLE objects (oid CHAR(20) PRIMARY KEY, type TEXT, size INT, data BLOB /*compressed*/);
 ```
 
 The data is compressed with the `compress()` function.
