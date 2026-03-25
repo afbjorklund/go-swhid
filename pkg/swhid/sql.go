@@ -78,7 +78,7 @@ func (db *Database) WriteObject(ctx context.Context, oid []byte, typ string, dat
 	_, err := db.DB.ExecContext(ctx,
 		"INSERT OR IGNORE INTO objects (oid, type, size, data) VALUES ($1, $2, $3, $4)",
 		oid,
-		gittype[typ],
+		typ,
 		len(data),
 		compress(data))
 	return err
