@@ -19,6 +19,17 @@ type Database struct {
 	DB *sql.DB
 }
 
+const Libgit2Compat = false
+
+var git_object_type = map[string]int{
+	"none":     0, // OBJ_NONE
+	"commit":   1, // OBJ_COMMIT
+	"tree":     2, // OBJ_TREE
+	"blob":     3, // OBJ_BLOB
+	"tag":      4, // OBJ_TAG
+	"snapshot": 5, // "reserved for future expansion"
+}
+
 func NewDatabase(path string) (*Database, error) {
 	var db *sql.DB
 	_, err := os.Stat("compress.so")
@@ -57,8 +68,14 @@ func NewDatabase(path string) (*Database, error) {
 	if err := db.PingContext(ctx); err != nil {
 		return nil, err
 	}
+	got := "TEXT"
+	comment := " /*compressed*/"
+	if Libgit2Compat {
+		got = "INTEGER"
+		comment = ""
+	}
 	_, err = db.ExecContext(ctx,
-		"CREATE TABLE IF NOT EXISTS objects (oid CHARACTER(20) PRIMARY KEY NOT NULL, type INTEGER NOT NULL, size INTEGER NOT NULL, data BLOB /*compressed*/)")
+		"CREATE TABLE IF NOT EXISTS objects (oid CHARACTER(20) PRIMARY KEY NOT NULL, type " + got + " NOT NULL, size INTEGER NOT NULL, data BLOB" + comment + ")")
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +87,17 @@ func NewDatabase(path string) (*Database, error) {
 	return &Database{DB: db}, nil
 }
 
+func gittype(typ string) any {
+	if Libgit2Compat {
+		return git_object_type[typ]
+	}
+	return typ
+}
+
 func compress(data []byte) []byte {
+	if Libgit2Compat {
+		return data
+	}
 	var b bytes.Buffer
 	b.Write(varint(len(data)))
 	w, _ := zlib.NewWriterLevel(&b, zlib.BestSpeed)
@@ -83,7 +110,7 @@ func (db *Database) WriteObject(ctx context.Context, oid []byte, typ string, dat
 	_, err := db.DB.ExecContext(ctx,
 		"INSERT OR IGNORE INTO objects (oid, type, size, data) VALUES ($1, $2, $3, $4)",
 		oid,
-		typ,
+		gittype(typ),
 		len(data),
 		compress(data))
 	return err
