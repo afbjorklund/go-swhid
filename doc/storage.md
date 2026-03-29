@@ -1,4 +1,33 @@
 
+The SWH objects can be written to a directory
+or to a database, just like the Git objects.
+
+Each object has an object id (an "oid") SHA,
+which is the checksum of Type-Length-Value:
+
+`<type><space><size><nul><data>`
+
+A SHA-1 checksum is 20 bytes long.
+
+Git repositories can be stored in git bundles,
+which contains git packfiles, more efficiently
+than the simple directory structure shown here.
+But the loose objects are simpler to understand.
+
+Git repositories can also be stored in libgit2
+databases, which uses integer type and has data
+which is not explicitly compressed (just BLOB).
+There are different libgit2 backends for storage.
+
+The integer values for types are:
+
+0) `none` (not used by swh/git)
+1) `commit`
+2) `tree`
+3) `blob`
+4) `tag`
+5) `snapshot` (not used by git)
+
 ### .swh directory
 
 The .swh directory is similar to a .git directory.
