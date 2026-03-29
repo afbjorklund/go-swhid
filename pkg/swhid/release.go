@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 )
 
 type Release struct {
@@ -46,12 +45,20 @@ func (rel *Release) Swhid() *Swhid {
 	bytes := rel.serialized()
 	swhid := NewSwhidFromObject(RELEASE, NewObject("tag", bytes))
 	if WriteObjects && rel.Tag != "" && rel.ObjectType == "commit" {
-		_ = os.MkdirAll(filepath.Join(".", ".swh", "refs", "tags"), 0o755)
-		_ = os.WriteFile(filepath.Join(".", ".swh", "refs", "tags", rel.Tag), []byte(swhid.Hash.String()), 0o644)
+		dir, err := NewStorage(".swh")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return nil
+		}
+		ctx := context.TODO()
+		err = dir.WriteRef(ctx, rel.Tag, swhid.Hash, nil)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return nil
+		}
 	}
 	if WriteObjects && rel.Tag != "" && rel.ObjectType == "commit" && WriteDatabase {
-		dbpath := filepath.Join(".", "swh.db")
-		db, err := NewDatabase(dbpath)
+		db, err := NewDatabase("swh.db")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 			return nil
